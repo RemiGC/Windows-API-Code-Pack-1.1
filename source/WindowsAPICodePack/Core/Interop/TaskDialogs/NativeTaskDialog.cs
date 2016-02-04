@@ -268,7 +268,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             // as an atomic action,
             // but it is more .NET friendly to split them up.
             // Unfortunately, we do NOT have the return values at this stage.
-            if (id < DialogsDefaults.MinimumDialogControlId)
+            if (id <= DialogsDefaults.MinimumDialogControlId)
             {
                 return outerDialog.RaiseClosingEvent(id);
             }
