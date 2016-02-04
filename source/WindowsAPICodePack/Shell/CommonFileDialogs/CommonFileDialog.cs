@@ -632,12 +632,6 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
             {
                 canceled = false;
                 result = CommonFileDialogResult.Ok;
-
-                // Populate filenames if user didn't cancel.
-                PopulateWithFileNames(filenames);
-
-                // Populate the actual IShellItems
-                PopulateWithIShellItems(items);
             }
 
             return result;
@@ -964,7 +958,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
         /// </permission>
         protected void CheckFileNamesAvailable()
         {
-            if (showState != DialogShowState.Closed)
+            if (showState != DialogShowState.Closed && showState != DialogShowState.Closing)
             {
                 throw new InvalidOperationException(LocalizedMessages.CommonFileDialogNotClosed);
             }
@@ -986,7 +980,7 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
         /// </permission>
         protected void CheckFileItemsAvailable()
         {
-            if (showState != DialogShowState.Closed)
+            if (showState != DialogShowState.Closed && showState != DialogShowState.Closing)
             {
                 throw new InvalidOperationException(LocalizedMessages.CommonFileDialogNotClosed);
             }
@@ -1068,7 +1062,15 @@ namespace Microsoft.WindowsAPICodePack.Dialogs
         /// <param name="e">The event data.</param>
         protected virtual void OnFileOk(CancelEventArgs e)
         {
+            showState = DialogShowState.Closing;
             CancelEventHandler handler = FileOk;
+
+            // Populate filenames if user didn't cancel.
+            PopulateWithFileNames(filenames);
+
+            // Populate the actual IShellItems
+            PopulateWithIShellItems(items);
+
             if (handler != null)
             {
                 handler(this, e);
